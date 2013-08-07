@@ -63,4 +63,4 @@ Template Name: Custom Page Example
 
 			</div> <!-- end #content -->
 
-<?php get_footer(); ?>
+<?php get_footer();

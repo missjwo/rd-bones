@@ -118,4 +118,4 @@ The comments page for Bones
 	<?php endif; // If registration required and not logged in ?>
 </section>
 
-<?php endif; // if you delete this the sky will fall on your head ?>
+<?php endif; // if you delete this the sky will fall on your head

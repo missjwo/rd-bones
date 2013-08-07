@@ -55,12 +55,14 @@ http://digwp.com/2010/10/customize-wordpress-dashboard/
 function bones_rss_dashboard_widget() {
 	if(function_exists('fetch_feed')) {
 		include_once(ABSPATH . WPINC . '/feed.php');               // include the required file
-		$feed = fetch_feed('http://themble.com/feed/rss/');        // specify the source feed
+//		$feed = fetch_feed('http://themble.com/feed/rss/');        // specify the source feed
+		$feed = fetch_feed('http://feeds.feedburner.com/reasondigital/articles');     // specify the source feed
+		var_dump($feed);
 		$limit = $feed->get_item_quantity(7);                      // specify number of items
 		$items = $feed->get_items(0, $limit);                      // create an array of items
 	}
 	if ($limit == 0) echo '<div>The RSS Feed is either empty or unavailable.</div>';   // fallback message
-	else foreach ($items as $item) { ?>
+	else foreach ($items as $item) : ?>
 
 	<h4 style="margin-bottom: 0;">
 		<a href="<?php echo $item->get_permalink(); ?>" title="<?php echo mysql2date(__('j F Y @ g:i a', 'bonestheme'), $item->get_date('Y-m-d H:i:s')); ?>" target="_blank">
@@ -86,7 +88,7 @@ function bones_custom_dashboard_widgets() {
 // removing the dashboard widgets
 add_action('admin_menu', 'disable_default_dashboard_widgets');
 // adding any custom widgets
-add_action('wp_dashboard_setup', 'bones_custom_dashboard_widgets');
+//add_action('wp_dashboard_setup', 'bones_custom_dashboard_widgets');
 
 
 /************* CUSTOM LOGIN PAGE *****************/
@@ -118,14 +120,51 @@ I don't really recommend editing the admin too much
 as things may get funky if WordPress updates. Here
 are a few funtions which you can choose to use if
 you like.
-*/
+http://sumtips.com/2011/03/customize-wordpress-admin-bar.html
+ * /
+ */
+// custom Header logo
+function add_custom_admin_styles() {
+	echo '<style>
+		#wpadminbar a, #wpadminbar a:hover, #wpadminbar a img, #wpadminbar a img:hover{
+		  vertical-align: middle;
+		}
+		</style>';
+
+}
+add_action('admin_head', 'add_custom_admin_styles');
+
+// removing admin menus
+function remove_admin_bar_links() {
+	global $wp_admin_bar, $use_comments;
+	$wp_admin_bar->remove_node('wp-logo');
+	if(!is_admin()){
+		$wp_admin_bar->remove_node('updates');
+	}
+	if($use_comments == false){
+		$wp_admin_bar->remove_node('comments');
+	}
+}
+add_action( 'wp_before_admin_bar_render', 'remove_admin_bar_links' );
+
+function add_rd_admin_bar_link() {
+	global $wp_admin_bar;
+	if ( !is_super_admin() || !is_admin_bar_showing() )
+		return;
+	$wp_admin_bar->add_node( array(
+	'id' => 'reasondigital',
+	'title' => __( '<img src="' . get_stylesheet_directory_uri() . '/library/images/r.png" alt="Reason Digital" title="Reason Digital Logo"/>'),
+	'href' => __('http://www.reasondigital.com/'),
+	'meta' => array('title'=>'Reason Digital'),
+	) );
+}
+add_action('admin_bar_menu', 'add_rd_admin_bar_link',25);
 
 // Custom Backend Footer
 function bones_custom_admin_footer() {
-	_e('<span id="footer-thankyou">Developed by <a href="http://yoursite.com" target="_blank">Your Site Name</a></span>. Built using <a href="http://themble.com/bones" target="_blank">Bones</a>.', 'bonestheme');
+	echo '<span id="footer-thankyou">Developed by <a href="http://www.reasondigital.com" target="_blank">Reason Digital</a></span>.';
 }
+
 
 // adding it to the admin area
 add_filter('admin_footer_text', 'bones_custom_admin_footer');
-
-?>
