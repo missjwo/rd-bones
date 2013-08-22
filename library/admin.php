@@ -161,7 +161,7 @@ function add_rd_admin_bar_link() {
 		return;
 	$wp_admin_bar->add_node( array(
 	'id' => 'reasondigital',
-	'title' => __( '<img src="' . get_stylesheet_directory_uri() . '/library/images/r.png" alt="Reason Digital" title="Reason Digital Logo"/>'),
+	'title' => __( '<img src="' . get_stylesheet_directory_uri() . '/library/images/rd-assets/r.png" alt="Reason Digital" title="Reason Digital Logo"/>'),
 	'href' => __('http://www.reasondigital.com/'),
 	'meta' => array('title'=>'Reason Digital'),
 	) );
