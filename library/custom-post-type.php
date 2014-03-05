@@ -57,6 +57,18 @@ function custom_post_example() {
 	/* this adds your post tags to your custom post type */
 	register_taxonomy_for_object_type('post_tag', 'custom_type');
 	
+	/* 
+	If you have issues with 404 and permalinks not flushing, use the code below 
+	http://en.bainternet.info/2011/custom-post-type-getting-404-on-permalinks
+	*/
+	/*
+	$set = get_option('post_type_rules_flased_casestudies');
+	if ($set !== true){
+		flush_rewrite_rules(false);
+		update_option('post_type_rules_flased_casestudies',true);
+	}
+	*/
+	
 } 
 
 	// adding the function to the Wordpress init
