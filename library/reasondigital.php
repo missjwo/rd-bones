@@ -128,6 +128,80 @@ function is_ancestor($post_id) {
         return false;
     }
 }
+
+/**
+ * Remove comments section from wp-admin
+ */
+function rd_remove_admin_comments() {
+    add_action( 'admin_menu', 'rd_remove_admin_comments_menu' );
+    function rd_remove_admin_comments_menu() {
+        remove_menu_page( 'edit-comments.php' );
+    }
+
+    // Removes from post and pages
+    add_action('init', 'remove_comment_support', 100);
+    function remove_comment_support() {
+        remove_post_type_support( 'post', 'comments' );
+        remove_post_type_support( 'page', 'comments' );
+    }
+
+    // Removes from admin bar
+    add_action( 'wp_before_admin_bar_render', 'rd_admin_bar_render' );
+    function rd_admin_bar_render() {
+        global $wp_admin_bar;
+        $wp_admin_bar->remove_menu('comments');
+    }
+}
+add_action('init', 'rd_remove_admin_comments');
+
+/**
+ * Remove posts section from wp-admin
+ */
+function rd_remove_admin_posts() {
+    add_action( 'admin_menu', 'rd_remove_admin_posts_menu' );
+    function rd_remove_admin_posts_menu() {
+        remove_menu_page( 'edit.php' );
+    }
+
+    // Removes from admin bar
+    add_action( 'wp_before_admin_bar_render', 'rd_admin_bar_render_posts' );
+    function rd_admin_bar_render_posts() {
+        global $wp_admin_bar;
+        $wp_admin_bar->remove_menu('posts');
+    }
+}
+add_action('init', 'rd_remove_admin_posts');
+
+
+function rd_pagniation($echo = true){
+	// Pagination
+	global $wp_query;
+	$unlikely_integer = 999999999;
+	echo '<pre>';
+		var_dump($wp_query);
+	echo '</pre>';
+	$pagination_args = array(
+		'base' => str_replace($unlikely_integer, '%#%', get_pagenum_link($unlikely_integer)),
+		'format' => '/page/%#%',
+		'current' => max(1, get_query_var('paged')),
+		'total' => $wp_query->max_num_pages
+	);
+
+	$html = '';
+
+	$html .= '<p class="pagination">';
+
+	$html .=  paginate_links($pagination_args);
+
+	$html .= '</p>';
+
+	if($echo){
+		echo $html;
+	} else {
+		return $html;
+	}
+}
+
 /**
  * Generic Login Error - Don't diffenciate between Username or Password Error.
  */
