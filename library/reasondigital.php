@@ -128,3 +128,7 @@ function is_ancestor($post_id) {
         return false;
     }
 }
+/**
+ * Generic Login Error - Don't diffenciate between Username or Password Error.
+ */
+ add_filter('login_errors', create_function('$a', "return '<b>Error:</b> Invalid Username or Password';"));
